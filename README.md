@@ -19,3 +19,7 @@
 > 因为我就只有个垃圾魅蓝note1，系统是5.1的，不知道在其他系统上面兼容不，如果步兼容，请联系我(smartdone@163.com)，然后把libart.so给我提供一份，多谢。
 
 > 需要的apk和so可以在看雪上面下载[http://bbs.pediy.com/thread-218936.htm](http://bbs.pediy.com/thread-218936.htm)
+
+- 很抱歉开始没有测试，不知道就只能够在android5.0和android5.1上面跑
+
+- 根据[@jwchen119](https://github.com/jwchen119)大佬的建议，把6.0的写了上去，待我找到7.x的机器再测试下7.x

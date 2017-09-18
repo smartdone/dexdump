@@ -6,6 +6,11 @@
     android:layout_margin="1dp"
     android:background="#EEDC82">
 
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:layout_weight="1"
         android:orientation="vertical"

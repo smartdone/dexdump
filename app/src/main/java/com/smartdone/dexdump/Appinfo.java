@@ -1,5 +1,7 @@
 package com.smartdone.dexdump;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by smartdone on 2017/7/2.
  */
@@ -8,6 +10,15 @@ public class Appinfo {
     private String appName;
     private String appPackage;
     private boolean isChecked;
+    private Drawable icon;
+
+    public Drawable getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Drawable icon) {
+        this.icon = icon;
+    }
 
     public Appinfo() {
 
