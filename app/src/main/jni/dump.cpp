@@ -4,6 +4,7 @@
 
 extern "C" {
 #include "include/inlineHook.h"
+#include "dlopen.h"
 }
 
 #include "dump.h"
@@ -182,13 +183,13 @@ void hook_21_22() {
     __android_log_print(ANDROID_LOG_INFO, TAG, "register hook success");
 }
 
-void hook_23() {
-    void *handle = dlopen("libart.so", RTLD_GLOBAL | RTLD_LAZY);
+void hook_23_plus() {
+    void *handle = ndk_dlopen("libart.so", RTLD_GLOBAL | RTLD_LAZY);
     if (handle == NULL) {
         __android_log_print(ANDROID_LOG_ERROR, TAG, "Error: unable to find the SO : libart.so");
         return;
     }
-    void *addr = dlsym(handle,
+    void *addr = ndk_dlsym(handle,
                        "_ZN3art7DexFile10OpenMemoryEPKhjRKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEjPNS_6MemMapEPKNS_10OatDexFileEPS9_");
     if (addr == NULL) {
         __android_log_print(ANDROID_LOG_ERROR, TAG,
@@ -210,6 +211,7 @@ void hook_23() {
     __android_log_print(ANDROID_LOG_INFO, TAG, "register hook success");
 }
 
+
 JNIEXPORT void JNICALL Java_com_smartdone_dexdump_Dumpper_dump(JNIEnv *env, jclass clazz) {
     getProcessName(getpid(), pname, sizeof(pname));
     int api = apiLevel();
@@ -218,6 +220,7 @@ JNIEXPORT void JNICALL Java_com_smartdone_dexdump_Dumpper_dump(JNIEnv *env, jcla
     } else if(api < 23) {
         hook_21_22();
     } else {
-        hook_23();
+        ndk_init(env);
+        hook_23_plus();
     }
 }

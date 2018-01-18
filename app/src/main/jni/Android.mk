@@ -18,6 +18,6 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE    := hook
-LOCAL_SRC_FILES := inlineHook.c relocate.c dump.cpp
+LOCAL_SRC_FILES := inlineHook.c relocate.c dlopen.c dump.cpp
 LOCAL_LDLIBS := -llog
 include $(BUILD_SHARED_LIBRARY)
