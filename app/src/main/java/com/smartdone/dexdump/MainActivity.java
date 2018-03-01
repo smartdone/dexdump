@@ -1,7 +1,10 @@
 package com.smartdone.dexdump;
 
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -52,36 +55,62 @@ public class MainActivity extends AppCompatActivity {
                 getInstallAppList();
             }
         }.start();
+
     }
 
 
     private void getInstallAppList() {
         try {
-            List<PackageInfo> packageInfos = getPackageManager().getInstalledPackages(0);
-            for (PackageInfo packageInfo : packageInfos) {
-                if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                    Appinfo info = new Appinfo();
-                    info.setIcon(zoomDrawable(packageInfo.applicationInfo.loadIcon(getPackageManager()), DensityUtil.dip2px(this, 128), DensityUtil.dip2px(this, 128)));
-                    info.setAppName(packageInfo.applicationInfo.loadLabel(getPackageManager()).toString());
-                    info.setAppPackage(packageInfo.packageName);
-                    if (Config.contains(selected, info.getAppPackage())) {
-                        info.setChecked(true);
-                    } else {
-                        info.setChecked(false);
+            if(getApiLevel() <= 23) {
+                List<PackageInfo> packageInfos = getPackageManager().getInstalledPackages(0);
+                for (PackageInfo packageInfo : packageInfos) {
+                    if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                        Appinfo info = new Appinfo();
+                        info.setIcon(zoomDrawable(packageInfo.applicationInfo.loadIcon(getPackageManager()), DensityUtil.dip2px(this, 128), DensityUtil.dip2px(this, 128)));
+                        info.setAppName(packageInfo.applicationInfo.loadLabel(getPackageManager()).toString());
+                        info.setAppPackage(packageInfo.packageName);
+                        if (Config.contains(selected, info.getAppPackage())) {
+                            info.setChecked(true);
+                        } else {
+                            info.setChecked(false);
+                        }
+                        appinfos.add(info);
                     }
-                    appinfos.add(info);
+                }
+            } else {
+                Intent startupIntent = new Intent(Intent.ACTION_MAIN);
+                startupIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                final PackageManager pm =  getPackageManager();
+                List<ResolveInfo> activities = pm.queryIntentActivities(startupIntent, 0);
+                for(ResolveInfo resolveInfo : activities) {
+                    Appinfo appinfo = new Appinfo();
+                    appinfo.setIcon(zoomDrawable(resolveInfo.loadIcon(pm), DensityUtil.dip2px(this, 128), DensityUtil.dip2px(this, 128)));
+                    appinfo.setAppName(resolveInfo.loadLabel(pm).toString());
+                    appinfo.setAppPackage(resolveInfo.resolvePackageName);
+
+                    if (Config.contains(selected, appinfo.getAppPackage())) {
+                        appinfo.setChecked(true);
+                    } else {
+                        appinfo.setChecked(false);
+                    }
+                    appinfos.add(appinfo);
                 }
             }
+            adapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private int getApiLevel() {
+        return Integer.parseInt(android.os.Build.VERSION.SDK);
     }
 
     class AppAdapter extends BaseAdapter {
 
         private List<Appinfo> appinfos;
 
-        public AppAdapter(List<Appinfo> appinfos) {
+        private AppAdapter(List<Appinfo> appinfos) {
             this.appinfos = appinfos;
         }
 
@@ -104,12 +133,12 @@ public class MainActivity extends AppCompatActivity {
         public View getView(int i, View view, ViewGroup viewGroup) {
             View v = LayoutInflater.from(MainActivity.this).inflate(R.layout.item, null);
             final int posi = i;
-            final TextView appname = (TextView) v.findViewById(R.id.tv_appname);
+            final TextView appname = v.findViewById(R.id.tv_appname);
             appname.setText(appinfos.get(i).getAppName());
-            TextView appPackage = (TextView) v.findViewById(R.id.tv_apppackage);
+            TextView appPackage = v.findViewById(R.id.tv_apppackage);
             appPackage.setText(appinfos.get(i).getAppPackage());
-            CheckBox checkBox = (CheckBox) v.findViewById(R.id.cb_select);
-            ImageView icon = (ImageView) v.findViewById(R.id.iv_icon);
+            CheckBox checkBox = v.findViewById(R.id.cb_select);
+            ImageView icon = v.findViewById(R.id.iv_icon);
             icon.setImageDrawable(appinfos.get(i).getIcon());
             if (appinfos.get(i).isChecked()) {
                 checkBox.setChecked(true);
