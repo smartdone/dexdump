@@ -42,19 +42,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        PermisionUtils.verifyStoragePermissions(this);
         Dumpper.dump();
         selected = Config.getConfig();
         appinfos = new ArrayList<>();
+
         listView = (ListView) findViewById(R.id.applist);
         adapter = new AppAdapter(appinfos);
         listView.setAdapter(adapter);
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                getInstallAppList();
-            }
-        }.start();
+        getInstallAppList();
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -96,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                     appinfos.add(appinfo);
                 }
             }
-            adapter.notifyDataSetChanged();
+//            adapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
         }

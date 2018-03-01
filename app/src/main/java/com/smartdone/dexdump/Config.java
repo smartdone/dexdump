@@ -1,9 +1,9 @@
 package com.smartdone.dexdump;
 
+import android.os.Environment;
 import android.util.Log;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,14 +18,16 @@ import java.util.List;
  */
 
 public class Config {
-    private static final String FILENAME = "/sdcard/dumdex.js";
+    private static final String TAG = "DEX_DUMP";
+    private static final String FILENAME = Environment.getExternalStorageDirectory().getPath() + File.separator + "dumdex.js";
 
-    public static void writeConfig(String s) {
+    private static void writeConfig(String s) {
         try {
             FileOutputStream fout = new FileOutputStream(FILENAME);
             fout.write(s.getBytes("utf-8"));
             fout.flush();
             fout.close();
+            Log.e("DEX_DUMP", "write file");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,7 +67,7 @@ public class Config {
 
     public static List<String> getConfig() {
         File file = new File(FILENAME);
-        if (file.exists()) {
+        if (file.exists() && file.canRead()) {
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
                 String line = br.readLine();
@@ -77,6 +79,15 @@ public class Config {
                 br.close();
 //                Log.e("DEX_DUMP", "需要hook的列表: " + line);
                 return apps;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else  {
+            try {
+                if (!file.exists())
+                    file.createNewFile();
+                if(!file.canRead())
+                    Log.e(TAG, "文件没有读取权限");
             } catch (Exception e) {
                 e.printStackTrace();
             }
