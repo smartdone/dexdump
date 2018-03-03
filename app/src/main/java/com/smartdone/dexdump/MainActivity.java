@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         selected = Config.getConfig();
         appinfos = new ArrayList<>();
 
-        listView = (ListView) findViewById(R.id.applist);
+        listView = findViewById(R.id.applist);
         adapter = new AppAdapter(appinfos);
         listView.setAdapter(adapter);
         getInstallAppList();
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                     Appinfo appinfo = new Appinfo();
                     appinfo.setIcon(zoomDrawable(resolveInfo.loadIcon(pm), DensityUtil.dip2px(this, 128), DensityUtil.dip2px(this, 128)));
                     appinfo.setAppName(resolveInfo.loadLabel(pm).toString());
-                    appinfo.setAppPackage(resolveInfo.resolvePackageName);
+                    appinfo.setAppPackage(resolveInfo.activityInfo.packageName);
 
                     if (Config.contains(selected, appinfo.getAppPackage())) {
                         appinfo.setChecked(true);

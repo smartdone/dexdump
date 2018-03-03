@@ -184,7 +184,7 @@ void hook_21_22() {
 }
 
 void hook_23_plus() {
-    void *handle = ndk_dlopen("libart.so", RTLD_GLOBAL | RTLD_LAZY);
+    void *handle = ndk_dlopen("libart.so", RTLD_NOW);
     if (handle == NULL) {
         __android_log_print(ANDROID_LOG_ERROR, TAG, "Error: unable to find the SO : libart.so");
         return;
