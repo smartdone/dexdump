@@ -1,5 +1,9 @@
 # dexdump
 
+# 已经用纯frida实现了，frida版本的会去遍历所有的类，并且加载，对于抽类的，能够修复那种执行的时候把代码填充回dex的
+[https://github.com/smartdone/Frida-Scripts/tree/master/unpack](https://github.com/smartdone/Frida-Scripts/tree/master/unpack)
+> 还是frida方便，环境配置简单，喜欢请点star哦
+
 ## 感谢
 - `ele7enxxh`大佬的[Android-Inline-Hook](https://github.com/ele7enxxh/Android-Inline-Hook)
 - `rrrfff`大佬的[ndk_dlopen](https://github.com/rrrfff/ndk_dlopen)
